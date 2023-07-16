@@ -1,16 +1,19 @@
-export const App = () => {
+import ContactsContainer from './contacts/contactsContainer/contactsContainer';
+import Form from './contacts/form/Form';
+import { Container, TitleContactList, TitlePhonebook } from './App.styled';
+
+const App = () => {
+
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <Container>
+      <TitlePhonebook>Phonebook</TitlePhonebook>
+      <Form />
+
+      <TitleContactList>Contacts</TitleContactList>
+      <ContactsContainer />
+    </Container>
   );
 };
+
+
+export default App;
