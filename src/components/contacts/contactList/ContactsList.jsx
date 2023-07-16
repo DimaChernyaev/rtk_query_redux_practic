@@ -1,11 +1,17 @@
 import { ContactList } from './ContactList.styled';
 import ContactItem from './contactItem/ContactItem';
+import { useGetContactsQuery } from 'redux/operation';
+// import { filterVisableList } from 'components/helpers/filterVisableContacts';
 import { useSelector } from 'react-redux';
-import { selectVisableContacts } from 'redux/selectors';
+import { useMemo } from 'react';
 
 const ContactsList = () => {
+  const { data } = useGetContactsQuery();
+  const filter = useSelector(state => state.filter);
 
-  const visableContacts = useSelector(selectVisableContacts);
+  const visableContacts = useMemo(() => {
+    return data.filter(contact => contact.name.toLowerCase().includes(filter));
+  }, [data, filter]);
 
   return (
     <ContactList>

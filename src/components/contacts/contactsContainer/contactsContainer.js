@@ -1,44 +1,26 @@
 import ContactsList from '../contactList/ContactsList';
 import Filter from '../filter/Filter';
 import { Container, NullContactsMessage } from './contactsContainer.styled';
-import { useSelector } from 'react-redux';
-import {
-  selectContactsItems,
-  selectError,
-  selectIsAllLoading,
-} from 'redux/selectors';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchContacts } from 'redux/operation';
 import Loader from 'components/loader/Loader';
 import { constMessage } from 'components/helpers/constMessage';
 import ErrorMessage from 'components/errorMessage/ErrorMessage';
+import { useGetContactsQuery } from 'redux/operation';
 
 const ContactsContainer = () => {
-  const contacts = useSelector(selectContactsItems);
-  const isLoading = useSelector(selectIsAllLoading);
-  const isError = useSelector(selectError);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+  const { data, error, isLoading } = useGetContactsQuery();
 
   return (
     <Container>
       <Filter />
       {isLoading && <Loader />}
-      {isError && <ErrorMessage>{constMessage.errorFetch}</ErrorMessage>}
-      {contacts.length > 0 && !isError ? (
+      {error && <ErrorMessage>{constMessage.errorFetch}</ErrorMessage>}
+      {data?.length > 0 && !error ? (
         <ContactsList />
       ) : (
         <>
-          {!isLoading &&
-            !isError && (
-              <NullContactsMessage>
-                {constMessage.emptyList}
-              </NullContactsMessage>
-            )}
+          {!isLoading && !error && (
+            <NullContactsMessage>{constMessage.emptyList}</NullContactsMessage>
+          )}
         </>
       )}
     </Container>

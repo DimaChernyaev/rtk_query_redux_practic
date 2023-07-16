@@ -1,40 +1,37 @@
-import axios from 'axios';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-axios.defaults.baseURL = 'https://64ad95e1b470006a5ec626d8.mockapi.io';
+export const contactsApi = createApi({
+  reducerPath: 'contacts',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://64ad95e1b470006a5ec626d8.mockapi.io/',
+  }),
+  tagTypes: ['Contacts'],
+  endpoints: builder => ({
+    getContacts: builder.query({
+      query: () => '/contacts',
+      providesTags: ['Contacts'],
+    }),
+    addContacts: builder.mutation({
+      query: contact => ({
+        url: '/contacts',
+        method: 'POST',
+        body: contact,
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
+    deleteContacts: builder.mutation({
+      query: id => ({
+        url: `/contacts/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
+  }),
+});
 
-export const fetchContacts = createAsyncThunk(
-  'contacts/contactsAll',
-  async (_, thunkAPI) => {
-    try {
-      const response = await axios.get('/contacts');
-      return response.data;
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
-
-export const addContacts = createAsyncThunk(
-  'contacts/addContacts',
-  async (contact, thunkAPI) => {
-    try {
-      const response = await axios.post('/contacts', { ...contact });
-      return response.data;
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
-
-export const deleteContact = createAsyncThunk(
-  'tasks/deleteTask',
-  async (contactId, thunkAPI) => {
-    try {
-      const response = await axios.delete(`/contacts/${contactId}`);
-      return response.data;
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
+export const {
+  useGetContactsQuery,
+  useAddContactsMutation,
+  useDeleteContactsMutation,
+} = contactsApi;
+console.log(useAddContactsMutation);
